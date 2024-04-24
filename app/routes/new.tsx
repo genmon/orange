@@ -1,4 +1,4 @@
-import { redirect } from '@remix-run/cloudflare'
+import { redirect } from 'partymix'
 
 export const loader = async () => {
 	const roomName = crypto.randomUUID().split('-')[0]

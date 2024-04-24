@@ -1,7 +1,4 @@
-import type {
-	ActionFunctionArgs,
-	LoaderFunctionArgs,
-} from '@remix-run/cloudflare'
+import type { ActionFunctionArgs, LoaderFunctionArgs } from 'partymix'
 import { handleApiRequest } from '~/api/roomsApi.server'
 import { ACCESS_AUTHENTICATED_USER_EMAIL_HEADER } from '~/utils/constants'
 import getUsername from '~/utils/getUsername.server'

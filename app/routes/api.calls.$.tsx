@@ -1,4 +1,4 @@
-import type { LoaderFunctionArgs } from '@remix-run/cloudflare'
+import type { LoaderFunctionArgs } from 'partymix'
 import invariant from 'tiny-invariant'
 
 const proxiedUrl = (url: string, appId: string) => {

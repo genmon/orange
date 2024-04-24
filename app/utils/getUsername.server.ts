@@ -1,4 +1,4 @@
-import { redirect } from '@remix-run/cloudflare'
+import { redirect } from 'partymix'
 import { commitSession, getSession } from '~/session'
 import { ACCESS_AUTHENTICATED_USER_EMAIL_HEADER } from './constants'
 

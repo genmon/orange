@@ -1,4 +1,4 @@
-import type { AppLoadContext } from '@remix-run/cloudflare'
+import type { AppLoadContext } from 'partymix'
 
 export async function handleApiRequest(
 	path: string[],
@@ -27,7 +27,8 @@ export async function handleApiRequest(
 					// world -- i.e., there is no way that someone in the UK and someone in New Zealand
 					// could coincidentally create the same ID at the same time, because unique IDs are,
 					// well, unique!
-					let id = env.rooms.newUniqueId()
+					//let id = env.rooms.newUniqueId()
+					let id = crypto.randomUUID()
 					return new Response(id.toString(), {
 						headers: { 'Access-Control-Allow-Origin': '*' },
 					})
@@ -51,6 +52,7 @@ export async function handleApiRequest(
 
 			// Each Durable Object has a 256-bit unique ID. IDs can be derived from string names, or
 			// chosen randomly by the system.
+			/*
 			let id
 			if (name.match(/^[0-9a-f]{64}$/)) {
 				// The name is 64 hex digits, so let's assume it actually just encodes an ID. We use this
@@ -64,6 +66,7 @@ export async function handleApiRequest(
 			} else {
 				return new Response('Name too long', { status: 404 })
 			}
+			*/
 
 			// Get the Durable Object stub for this room! The stub is a client object that can be used
 			// to send messages to the remote Durable Object instance. The stub is returned immediately;
@@ -71,12 +74,13 @@ export async function handleApiRequest(
 			// a network round trip before you could start sending requests. Since Durable Objects are
 			// created on-demand when the ID is first used, there's nothing to wait for anyway; we know
 			// an object will be available somewhere to receive our requests.
-			let roomObject = env.rooms.get(id)
+			let roomObject = env.parties.calls.get(name)
 
 			// Compute a new URL with `/api/room/<name>` removed. We'll forward the rest of the path
 			// to the Durable Object.
 			let newUrl = new URL(request.url)
-			newUrl.pathname = '/' + path.slice(2).join('/')
+			//newUrl.pathname = '/' + path.slice(2).join('/')
+			newUrl.pathname = `/parties/rooms/${name}/` + path.slice(2).join('/')
 
 			// Send the request to the object. The `fetch()` method of a Durable Object stub has the
 			// same signature as the global `fetch()` function, but the request is always sent to the

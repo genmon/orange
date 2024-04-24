@@ -1,0 +1,15 @@
+{
+	"$schema": "https://www.partykit.io/schema.json",
+	"name": "orange",
+	// remix compiles our actual entry point (party/main.ts) to build/index.js
+	"main": "build/index.js",
+	"compatibilityDate": "2023-12-22",
+	"define": {
+		"process.env.REMIX_DEV_ORIGIN": "'http://127.0.0.1:8002'",
+		"process.env.REMIX_DEV_SERVER_WS_PORT": "8002"
+	},
+	"serve": "public",
+	"parties": {
+		"calls": "./party/calls.ts"
+	}
+}

@@ -1,6 +1,6 @@
-import type { LoaderFunctionArgs } from '@remix-run/cloudflare'
-import { json } from '@remix-run/cloudflare'
 import { useLoaderData, useNavigate, useParams } from '@remix-run/react'
+import type { LoaderFunctionArgs } from 'partymix'
+import { json } from 'partymix'
 import { Fragment, useCallback, useEffect, useMemo, useState } from 'react'
 import { Flipper } from 'react-flip-toolkit'
 import { useMeasure, useMount, useWindowSize } from 'react-use'

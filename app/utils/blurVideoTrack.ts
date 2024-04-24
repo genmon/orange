@@ -1,6 +1,16 @@
-import '@mediapipe/selfie_segmentation'
+export default async function blurVideoTrack(
+	originalVideoStreamTrack: MediaStreamTrack
+) {
+	return originalVideoStreamTrack
+}
+
+/*
+import { VERSION as SELFIE_VERSION } from '@mediapipe/selfie_segmentation'
 import * as bodySegmentation from '@tensorflow-models/body-segmentation'
 import '@tensorflow/tfjs-backend-webgl'
+
+// Doing a console.debug here to make sure the module is loaded
+console.debug(`Using @mediapipe/selfie_segmentation version ${SELFIE_VERSION}`)
 
 export default async function blurVideoTrack(
 	originalVideoStreamTrack: MediaStreamTrack
@@ -35,6 +45,7 @@ export default async function blurVideoTrack(
 
 	const canvas = document.createElement('canvas')
 	// we need to create a context in order for this to work with firefox
+	// eslint-disable-next-line @typescript-eslint/no-unused-vars
 	const _contex = canvas.getContext('2d')
 	canvas.height = h
 	canvas.width = w
@@ -82,3 +93,4 @@ export default async function blurVideoTrack(
 
 	return blurredTrack
 }
+*/

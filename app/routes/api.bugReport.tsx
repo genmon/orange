@@ -1,5 +1,5 @@
-import type { ActionFunctionArgs } from '@remix-run/cloudflare'
-import { json } from '@remix-run/cloudflare'
+import type { ActionFunctionArgs } from 'partymix'
+import { json } from 'partymix'
 import invariant from 'tiny-invariant'
 import type { ChatCard } from '~/types/GoogleChatApi'
 import type { RoomState, User } from '~/types/Messages'

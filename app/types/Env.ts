@@ -1,4 +1,8 @@
-export type Env = {
+import type * as Party from 'partykit/server'
+
+export type Env = Party.FetchLobby
+
+/*export type Env = {
 	USER_DIRECTORY_URL?: string
 	FEEDBACK_URL?: string
 	FEEDBACK_QUEUE?: Queue
@@ -11,4 +15,4 @@ export type Env = {
 	MAX_WEBCAM_FRAMERATE?: string
 	MAX_WEBCAM_BITRATE?: string
 	MAX_WEBCAM_QUALITY_LEVEL?: string
-}
+}*/

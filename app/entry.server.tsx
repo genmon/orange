@@ -1,5 +1,5 @@
-import type { EntryContext } from '@remix-run/cloudflare'
 import { RemixServer } from '@remix-run/react'
+import type { AppLoadContext, EntryContext } from 'partymix'
 import { renderToString } from 'react-dom/server'
 import { RELEASE, SENTRY_DSN } from './utils/constants'
 
@@ -7,7 +7,8 @@ export default function handleRequest(
 	request: Request,
 	responseStatusCode: number,
 	responseHeaders: Headers,
-	remixContext: EntryContext
+	remixContext: EntryContext,
+	_loadContext: AppLoadContext
 ) {
 	try {
 		let markup = renderToString(
