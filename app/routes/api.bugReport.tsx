@@ -1,3 +1,4 @@
+import type { FetchLobby } from 'partykit/server'
 import type { ActionFunctionArgs } from 'partymix'
 import { json } from 'partymix'
 import invariant from 'tiny-invariant'
@@ -100,7 +101,9 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 													url:
 														populateTraceLink(
 															u.transceiverSessionId ?? '',
-															context.TRACE_LINK
+															(context.lobby as FetchLobby).env.TRACE_LINK as
+																| string
+																| undefined
 														) ?? '',
 												},
 											},
@@ -139,7 +142,8 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 		],
 	}
 
-	await context.FEEDBACK_QUEUE.send(chatCard)
+	// uh we don't have queues... so I'm going to just comment this out for now
+	// await context.FEEDBACK_QUEUE.send(chatCard)
 
 	return json({
 		status: 'ok',
