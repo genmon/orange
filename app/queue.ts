@@ -1,11 +1,14 @@
-import type { Env } from './types/Env'
+import type { AppLoadContext } from 'partymix'
 import type { ChatCard } from './types/GoogleChatApi'
 
-export const queue = async (batch: MessageBatch<ChatCard>, env: Env) => {
+export const queue = async (
+	batch: MessageBatch<ChatCard>,
+	context: AppLoadContext
+) => {
 	for (const message of batch.messages) {
-		if (env.env.FEEDBACK_URL) {
+		if (context.FEEDBACK_URL) {
 			try {
-				await fetch(env.env.FEEDBACK_URL as string, {
+				await fetch(context.FEEDBACK_URL, {
 					method: 'post',
 					body: JSON.stringify(message.body),
 				})

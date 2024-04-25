@@ -6,7 +6,7 @@ import { assertNonNullable } from '~/utils/assertNonNullable'
 import getUsername from '~/utils/getUsername.server'
 
 type Session = {
-	heartbeatTimeout: NodeJS.Timer | null
+	heartbeatTimeout: ReturnType<typeof setTimeout> | null
 	connection: Party.Connection
 	blockedMessages: ServerMessage[]
 	messageQueue: ServerMessage[]
@@ -25,7 +25,7 @@ type Session = {
 export default class CallsServer implements Party.Server {
 	sessions: Session[] = []
 	lastTimestamp: number = 0
-	stateSyncInterval: NodeJS.Timer | null = null
+	stateSyncInterval: ReturnType<typeof setInterval> | null = null
 
 	constructor(public party: Party.Room) {
 		party.blockConcurrencyWhile(async () => {

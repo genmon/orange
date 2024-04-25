@@ -1,3 +1,3 @@
 /// <reference types="@remix-run/dev" />
-/// <reference types="@remix-run/cloudflare" />
+/// <reference types="partymix" />
 /// <reference types="@cloudflare/workers-types" />
