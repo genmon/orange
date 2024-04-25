@@ -10,12 +10,15 @@ declare module '@remix-run/server-runtime' {
 
 if (process.env.NODE_ENV === 'development') {
 	// trigger a reload on the remix dev server
+	// @ts-ignore TODO: we should fix this, needs a new partymix release
 	logDevReady(build)
 }
 
 // create a request handler for remix
 const handleRequest = createRequestHandler({
+	// @ts-ignore TODO: we should fix this, needs a new partymix release
 	build,
+	// @ts-ignore TODO: we should fix this, needs a new partymix release
 	getLoadContext: (req, lobby, ctx) => {
 		// use this function to expose stuff in loaders
 		return { lobby }

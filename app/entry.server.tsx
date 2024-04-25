@@ -12,6 +12,7 @@ export default function handleRequest(
 ) {
 	try {
 		let markup = renderToString(
+			// @ts-ignore TODO: we should fix this, needs a new partymix release
 			<RemixServer context={remixContext} url={request.url} />
 		).replace(
 			'__CLIENT_ENV__',
