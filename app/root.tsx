@@ -168,7 +168,7 @@ const Document: FC<{ children?: ReactNode }> = ({ children }) => {
 					__CLIENT_ENV__
 				</div>
 				<Scripts />
-				<LiveReload />
+				{process.env.NODE_ENV === 'development' && <LiveReload />}
 			</body>
 		</html>
 	)
