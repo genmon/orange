@@ -1,4 +1,3 @@
-import type { FetchLobby } from 'partykit/server'
 import type { LoaderFunctionArgs } from 'partymix'
 import invariant from 'tiny-invariant'
 
@@ -35,10 +34,7 @@ const proxyCallsApi = async ({ request, context }: LoaderFunctionArgs) => {
 		}
 	}
 
-	return fetch(
-		proxiedUrl(url, (context.lobby as FetchLobby).env.CALLS_APP_ID as string),
-		proxyInit
-	)
+	return fetch(proxiedUrl(url, context.CALLS_APP_ID), proxyInit)
 }
 
 export const loader = proxyCallsApi

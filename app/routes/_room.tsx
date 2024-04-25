@@ -19,17 +19,19 @@ function numberOrUndefined(value: unknown): number | undefined {
 }
 
 export const loader = async ({ context }: LoaderFunctionArgs) => {
+	const { mode } = context
+
 	const {
-		mode,
+		USER_DIRECTORY_URL,
 		TRACE_LINK,
 		API_EXTRA_PARAMS,
 		MAX_WEBCAM_FRAMERATE,
 		MAX_WEBCAM_BITRATE,
 		MAX_WEBCAM_QUALITY_LEVEL,
-	} = context
+	} = process.env
 	return json({
 		mode,
-		userDirectoryUrl: context.USER_DIRECTORY_URL,
+		userDirectoryUrl: USER_DIRECTORY_URL,
 		traceLink: TRACE_LINK,
 		apiExtraParams: API_EXTRA_PARAMS,
 		maxWebcamFramerate: numberOrUndefined(MAX_WEBCAM_FRAMERATE),

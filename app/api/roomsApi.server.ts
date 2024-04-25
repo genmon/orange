@@ -1,4 +1,3 @@
-import type { FetchLobby } from 'partykit/server'
 import type { AppLoadContext } from 'partymix'
 
 export async function handleApiRequest(
@@ -75,7 +74,7 @@ export async function handleApiRequest(
 			// a network round trip before you could start sending requests. Since Durable Objects are
 			// created on-demand when the ID is first used, there's nothing to wait for anyway; we know
 			// an object will be available somewhere to receive our requests.
-			let roomObject = (env.lobby as FetchLobby).parties.calls.get(name)
+			let roomObject = env.lobby.parties.calls.get(name)
 			// we should fix the type inference above to avoid the `as`
 
 			// Compute a new URL with `/api/room/<name>` removed. We'll forward the rest of the path

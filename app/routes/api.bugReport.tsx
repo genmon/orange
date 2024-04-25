@@ -1,4 +1,3 @@
-import type { FetchLobby } from 'partykit/server'
 import type { ActionFunctionArgs } from 'partymix'
 import { json } from 'partymix'
 import invariant from 'tiny-invariant'
@@ -101,9 +100,7 @@ export const action = async ({ request, context }: ActionFunctionArgs) => {
 													url:
 														populateTraceLink(
 															u.transceiverSessionId ?? '',
-															(context.lobby as FetchLobby).env.TRACE_LINK as
-																| string
-																| undefined
+															context.TRACE_LINK
 														) ?? '',
 												},
 											},
