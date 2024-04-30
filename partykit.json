@@ -10,6 +10,7 @@
 	},
 	"serve": "public",
 	"parties": {
-		"calls": "./party/calls.ts"
+		"calls": "./party/calls.ts",
+		"presence": "./party/presence.ts"
 	}
 }
