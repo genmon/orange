@@ -11,7 +11,6 @@ import { IceDisconnectedToast } from '~/components/IceDisconnectedToast'
 import { Icon } from '~/components/Icon/Icon'
 import { LeaveRoomButton } from '~/components/LeaveRoomButton'
 import { MicButton } from '~/components/MicButton'
-import { OverflowMenu } from '~/components/OverflowMenu'
 import { Participant } from '~/components/Participant'
 import { ParticipantsButton } from '~/components/ParticipantsMenu'
 import { PullAudioTracks } from '~/components/PullAudioTracks'
@@ -116,7 +115,11 @@ export default function Room() {
 	)
 }
 
-function JoinedRoom({ bugReportsEnabled }: { bugReportsEnabled: boolean }) {
+export function JoinedRoom({
+	bugReportsEnabled,
+}: {
+	bugReportsEnabled: boolean
+}) {
 	const {
 		userMedia,
 		peer,
@@ -301,7 +304,7 @@ function JoinedRoom({ bugReportsEnabled }: { bugReportsEnabled: boolean }) {
 						otherUsers={otherUsers}
 						className="hidden md:block"
 					></ParticipantsButton>
-					<OverflowMenu bugReportsEnabled={bugReportsEnabled} />
+					{/*<OverflowMenu bugReportsEnabled={bugReportsEnabled} />*/}
 					<LeaveRoomButton />
 				</div>
 			</div>

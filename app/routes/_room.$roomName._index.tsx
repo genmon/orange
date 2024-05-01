@@ -6,7 +6,6 @@ import invariant from 'tiny-invariant'
 import { AudioIndicator } from '~/components/AudioIndicator'
 import { Button } from '~/components/Button'
 import { CameraButton } from '~/components/CameraButton'
-import { CopyButton } from '~/components/CopyButton'
 import { Disclaimer } from '~/components/Disclaimer'
 import { Icon } from '~/components/Icon/Icon'
 import { MicButton } from '~/components/MicButton'
@@ -26,6 +25,10 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
 export default function Lobby() {
 	const { roomName } = useParams()
+	return <XLobby roomName={roomName!} />
+}
+
+export function XLobby({ roomName }: { roomName: string }) {
 	const navigate = useNavigate()
 	const { setJoined, userMedia, room } = useRoomContext()
 	const { videoStreamTrack, audioStreamTrack, audioEnabled } = userMedia
@@ -109,7 +112,8 @@ export default function Lobby() {
 								// we navigate here with javascript instead of an a
 								// tag because we don't want it to be possible to join
 								// the room without the JS having loaded
-								navigate('room')
+								// @TODO-WATERHOLE: Needs fix
+								//navigate('room')
 							}}
 						>
 							Join
@@ -118,7 +122,7 @@ export default function Lobby() {
 					<MicButton />
 					<CameraButton />
 					<SettingsButton />
-					<CopyButton></CopyButton>
+					{/*<CopyButton></CopyButton>*/}
 				</div>
 			</div>
 			<div className="flex flex-col justify-end flex-1">

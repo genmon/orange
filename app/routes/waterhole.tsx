@@ -1,28 +1,142 @@
-import Cursors from '~/presence/Cursors'
-import PresenceProvider from '~/presence/presence-context'
+import { Outlet, useLoaderData } from '@remix-run/react'
+import type { LoaderFunctionArgs } from 'partymix'
+import { json } from 'partymix'
+import { useMemo, useState } from 'react'
+import invariant from 'tiny-invariant'
+import { EnsureOnline } from '~/components/EnsureOnline'
+import { EnsurePermissions } from '~/components/EnsurePermissions'
+import { Icon } from '~/components/Icon/Icon'
 
-const PARTYKIT_HOST = '127.0.0.1:1999'
-const pageId = 'waterhole'
+import { usePeerConnection } from '~/hooks/usePeerConnection'
+import usePushedTrack from '~/hooks/usePushedTrack'
+import useRoom from '~/hooks/useRoom'
+import type { RoomContextType } from '~/hooks/useRoomContext'
+import useUserMedia from '~/hooks/useUserMedia'
 
-export default function Waterhole() {
+function numberOrUndefined(value: unknown): number | undefined {
+	const num = Number(value)
+	return isNaN(num) ? undefined : num
+}
+
+export const loader = async ({ context }: LoaderFunctionArgs) => {
+	const { mode } = context
+
+	const {
+		USER_DIRECTORY_URL,
+		TRACE_LINK,
+		API_EXTRA_PARAMS,
+		MAX_WEBCAM_FRAMERATE,
+		MAX_WEBCAM_BITRATE,
+		MAX_WEBCAM_QUALITY_LEVEL,
+	} = process.env
+	return json({
+		mode,
+		userDirectoryUrl: USER_DIRECTORY_URL,
+		traceLink: TRACE_LINK,
+		apiExtraParams: API_EXTRA_PARAMS,
+		maxWebcamFramerate: numberOrUndefined(MAX_WEBCAM_FRAMERATE),
+		maxWebcamBitrate: numberOrUndefined(MAX_WEBCAM_BITRATE),
+		maxWebcamQualityLevel: numberOrUndefined(MAX_WEBCAM_QUALITY_LEVEL),
+	})
+}
+
+export default function RoomWithPermissions() {
 	return (
-		<PresenceProvider
-			host={PARTYKIT_HOST}
-			room={pageId}
-			presence={{
-				name: 'Anonymous User',
-				color: '#0000f0',
-			}}
-		>
-			<div
-				style={{ minHeight: '100dvh' }}
-				className="w-full absolute top-0 left-0"
+		<EnsurePermissions>
+			<EnsureOnline
+				fallback={
+					<div className="grid h-full place-items-center">
+						<div>
+							<h1 className="flex items-center gap-3 text-3xl font-black">
+								<Icon type="SignalSlashIcon" />
+								You are offline
+							</h1>
+						</div>
+					</div>
+				}
 			>
-				<Cursors />
-				<div className="grid h-full gap-4 place-content-center">
-					<h1 className="text-3xl font-bold">Hello, Waterhole!</h1>
-				</div>
-			</div>
-		</PresenceProvider>
+				<Room />
+			</EnsureOnline>
+		</EnsurePermissions>
 	)
+}
+
+function tryToGetDimensions(videoStreamTrack?: MediaStreamTrack) {
+	if (
+		videoStreamTrack === undefined ||
+		// TODO: Determine a better way to get dimensions in Firefox
+		// where this isn't API isn't supported. For now, Firefox will
+		// just not be constrained and scaled down by dimension scaling
+		// but the bandwidth and framerate constraints will still apply
+		// https://caniuse.com/?search=getCapabilities
+		videoStreamTrack.getCapabilities === undefined
+	) {
+		return { height: 0, width: 0 }
+	}
+	const height = videoStreamTrack?.getCapabilities().height?.max ?? 0
+	const width = videoStreamTrack?.getCapabilities().width?.max ?? 0
+
+	return { height, width }
+}
+
+function Room() {
+	const [joined, setJoined] = useState(false)
+	//const { roomName } = useParams()
+	const roomName = 'waterhole'
+	invariant(roomName)
+
+	const {
+		mode,
+		userDirectoryUrl,
+		traceLink,
+		apiExtraParams,
+		maxWebcamBitrate = 1_200_000,
+		maxWebcamFramerate = 24,
+		maxWebcamQualityLevel = 1080,
+	} = useLoaderData<typeof loader>()
+
+	const userMedia = useUserMedia(mode)
+	const room = useRoom({ roomName, userMedia })
+	const { peer, debugInfo, iceConnectionState } =
+		usePeerConnection(apiExtraParams)
+
+	const scaleResolutionDownBy = useMemo(() => {
+		const videoStreamTrack = userMedia.videoStreamTrack
+		const { height, width } = tryToGetDimensions(videoStreamTrack)
+		// we need to do this in case camera is in portrait mode
+		const smallestDimension = Math.min(height, width)
+		return Math.max(smallestDimension / maxWebcamQualityLevel, 1)
+	}, [maxWebcamQualityLevel, userMedia.videoStreamTrack])
+
+	const pushedVideoTrack = usePushedTrack(peer, userMedia.videoStreamTrack, {
+		maxFramerate: maxWebcamFramerate,
+		maxBitrate: maxWebcamBitrate,
+		scaleResolutionDownBy,
+	})
+	const pushedAudioTrack = usePushedTrack(peer, userMedia.audioStreamTrack, {
+		priority: 'high',
+	})
+	const pushedScreenSharingTrack = usePushedTrack(
+		peer,
+		userMedia.screenShareVideoTrack
+	)
+
+	const context: RoomContextType = {
+		joined,
+		setJoined,
+		traceLink,
+		userMedia,
+		userDirectoryUrl,
+		peer,
+		peerDebugInfo: debugInfo,
+		iceConnectionState,
+		room,
+		pushedTracks: {
+			video: pushedVideoTrack,
+			audio: pushedAudioTrack,
+			screenshare: pushedScreenSharingTrack,
+		},
+	}
+
+	return <Outlet context={context} />
 }
