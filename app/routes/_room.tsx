@@ -11,6 +11,7 @@ import { usePeerConnection } from '~/hooks/usePeerConnection'
 import usePushedTrack from '~/hooks/usePushedTrack'
 import useRoom from '~/hooks/useRoom'
 import type { RoomContextType } from '~/hooks/useRoomContext'
+import { RoomContext } from '~/hooks/useRoomContext'
 import useUserMedia from '~/hooks/useUserMedia'
 
 function numberOrUndefined(value: unknown): number | undefined {
@@ -137,5 +138,9 @@ function Room() {
 		},
 	}
 
-	return <Outlet context={context} />
+	return (
+		<RoomContext.Provider value={context}>
+			<Outlet context={{ userDirectoryUrl }} />
+		</RoomContext.Provider>
+	)
 }

@@ -20,12 +20,14 @@ export default function Waterhole() {
 				color: '#0000f0',
 			}}
 		>
-			{!joined && <XLobby roomName={pageId} />}
-			{joined && (
-				<Toast.Provider>
-					<JoinedRoom bugReportsEnabled={false} />
-				</Toast.Provider>
-			)}
+			<div className="w-1/2 h-1/2">
+				{!joined && <XLobby roomName={pageId} />}
+				{joined && (
+					<Toast.Provider>
+						<JoinedRoom bugReportsEnabled={false} />
+					</Toast.Provider>
+				)}
+			</div>
 			<div
 				className="z-10 fixed top-0 left-0 w-full pointer-events-none"
 				style={{ minHeight: '100dvh' }}
