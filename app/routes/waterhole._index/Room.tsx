@@ -1,6 +1,4 @@
-import { Outlet, useLoaderData } from '@remix-run/react'
-import type { LoaderFunctionArgs } from 'partymix'
-import { json } from 'partymix'
+import { useOutletContext } from '@remix-run/react'
 import { useMemo, useState } from 'react'
 import invariant from 'tiny-invariant'
 import { EnsureOnline } from '~/components/EnsureOnline'
@@ -11,36 +9,14 @@ import { usePeerConnection } from '~/hooks/usePeerConnection'
 import usePushedTrack from '~/hooks/usePushedTrack'
 import useRoom from '~/hooks/useRoom'
 import type { RoomContextType } from '~/hooks/useRoomContext'
+import { RoomContext } from '~/hooks/useRoomContext'
 import useUserMedia from '~/hooks/useUserMedia'
 
-function numberOrUndefined(value: unknown): number | undefined {
-	const num = Number(value)
-	return isNaN(num) ? undefined : num
-}
-
-export const loader = async ({ context }: LoaderFunctionArgs) => {
-	const { mode } = context
-
-	const {
-		USER_DIRECTORY_URL,
-		TRACE_LINK,
-		API_EXTRA_PARAMS,
-		MAX_WEBCAM_FRAMERATE,
-		MAX_WEBCAM_BITRATE,
-		MAX_WEBCAM_QUALITY_LEVEL,
-	} = process.env
-	return json({
-		mode,
-		userDirectoryUrl: USER_DIRECTORY_URL,
-		traceLink: TRACE_LINK,
-		apiExtraParams: API_EXTRA_PARAMS,
-		maxWebcamFramerate: numberOrUndefined(MAX_WEBCAM_FRAMERATE),
-		maxWebcamBitrate: numberOrUndefined(MAX_WEBCAM_BITRATE),
-		maxWebcamQualityLevel: numberOrUndefined(MAX_WEBCAM_QUALITY_LEVEL),
-	})
-}
-
-export default function RoomWithPermissions() {
+export default function RoomWithPermissions({
+	children,
+}: {
+	children: React.ReactNode
+}) {
 	return (
 		<EnsurePermissions>
 			<EnsureOnline
@@ -55,7 +31,7 @@ export default function RoomWithPermissions() {
 					</div>
 				}
 			>
-				<Room />
+				<Room>{children}</Room>
 			</EnsureOnline>
 		</EnsurePermissions>
 	)
@@ -79,7 +55,7 @@ function tryToGetDimensions(videoStreamTrack?: MediaStreamTrack) {
 	return { height, width }
 }
 
-function Room() {
+function Room({ children }: { children: React.ReactNode }) {
 	const [joined, setJoined] = useState(false)
 	//const { roomName } = useParams()
 	const roomName = 'waterhole'
@@ -93,8 +69,7 @@ function Room() {
 		maxWebcamBitrate = 1_200_000,
 		maxWebcamFramerate = 24,
 		maxWebcamQualityLevel = 1080,
-	} = useLoaderData<typeof loader>()
-	const loaderData = useLoaderData<typeof loader>()
+	} = useOutletContext() as any
 
 	const userMedia = useUserMedia(mode)
 	const room = useRoom({ roomName, userMedia })
@@ -147,11 +122,5 @@ function Room() {
 	// - VideoCall can also managed 'joined' state
 	// - Finally move RoomWithPermissions to VideoCallWithPermissions
 
-	return <Outlet context={loaderData} />
-
-	/*return (
-		<RoomContext.Provider value={context}>
-			<Outlet context={loaderData} />
-		</RoomContext.Provider>
-	)*/
+	return <RoomContext.Provider value={context}>{children}</RoomContext.Provider>
 }
