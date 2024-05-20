@@ -123,21 +123,29 @@ function Room() {
 	)
 
 	const context: RoomContextType = {
-		joined,
-		setJoined,
-		traceLink,
-		userMedia,
-		userDirectoryUrl,
-		peer,
-		peerDebugInfo: debugInfo,
-		iceConnectionState,
-		room,
+		joined, // this component's state
+		setJoined, // this component's state
+		traceLink, // from process.env
+		userMedia, // HERE: relies on mode from loader
+		userDirectoryUrl, // from process.env
+		peer, // HERE: relies on mode from loader and process.env
+		peerDebugInfo: debugInfo, // HERE: relies on mode from loader and process.env
+		iceConnectionState, // HERE: relies on mode from loader and process.env
+		room, // HERE: relies on roomName (props) and mode from loader
 		pushedTracks: {
+			// HERE: relies on mode from loader and process.env
 			video: pushedVideoTrack,
 			audio: pushedAudioTrack,
 			screenshare: pushedScreenSharingTrack,
 		},
 	}
+
+	// @TODO - Split into a component VideoCall that guarantees permissions, the lot
+	// Approach:
+	// - Move process.env properties and loader mode into Outlet context
+	// - Allow VideoCall to set up RoomContext.Provider using useOutletContext
+	// - VideoCall can also managed 'joined' state
+	// - Finally move RoomWithPermissions to VideoCallWithPermissions
 
 	return (
 		<RoomContext.Provider value={context}>
